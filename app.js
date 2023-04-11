@@ -1,23 +1,34 @@
-// npm - global command , comes with node
-// npm --version
+const {readFile , writeFile} = require('fs')
+const util = require('util')
+const readFilePromise = util.promisify(readFile)
+const writeFilePromise = util.promisify(writeFile)
 
-// local dependency -use it only in this particular project
-// npm i <packageName>
+const getText = (path) =>{
+    return new Promise((resolve,reject)=>{
+        readFile(path,'utf-8',(err,data) =>{
+            if(err){
+                reject(err)
+            }
+            else{
+                resolve(data)
+            }
+        })
+    })
+}
 
-// global dependency - use it in any project
-// npm install -g <packageName>
-// sudo install -g <packageName> (mac)
 
-// package.json - manifest file (stores  important info about project/package)
-// manual approach (create package.json in the  root, create properties etc)
-// npm init (step by step, press enter to skip)
-// npm init -y(everything default)
+const start = async() => {
+    try{
+        const first =await getText('./content/subfolder/first.txt','utf-8')
+        const second =await getText('./content/subfolder/second.txt','utf-8')
+        await writeFilePromise('./content/subfolder/result-mind-grenade.txt',`This is awesome ${first} ${second}`,{flag :'a'})
+        console.log(first)
+        console.log(second)
 
+    }catch(error) {
+        console.log(error)
+    }
+}
 
-const _ = require('lodash')
+start()
 
-const items = [1,[2,[3,[4]]]]
-const newItems =_.flattenDeep(items);
-console.log(newItems);
-
-console.log("hello people")
