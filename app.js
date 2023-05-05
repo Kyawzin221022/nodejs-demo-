@@ -1,48 +1,9 @@
-const {readFile,writeFile} = require('fs')
-const util = require('util')
-const readFilePromise = util.promisify(readFile)
-const writeFilePrommise = util.promisify(writeFile)
+const {createReadStream} = require('fs')
 
-const start = async() =>{
-    try{
-        const first = await readFilePromise('./content/subfolder/first.txt','utf-8')
-        const second = await readFilePromise('./content/subfolder/second.txt','utf-8')
-        await writeFilePrommise('./content/subfolder/result-mind-gren.txt',`This is Awesome : ${first } and ${second}`,{flag : 'a'})
-        console.log(first) 
-        console.log(second)
-    }
-    catch(error){
-        console.log(error)
-    }
-    finally{}
+const stream = createReadStream('./content/subfolder/big.txt',{highWaterMark : 90000 , encoding: 'utf-8'})
 
-}
-start()
+stream.on('data', (result) => {
+    console.log(result)
+})
 
-
-// getText('./content/subfolder/first.txt')
-// .then((result) => console.log(result))
-// .catch((err) => console.log(err))
-// readFile('./content/subfolder/first.txt','utf-8',(err,data)=>{
-//     if(err){
-//         return;
-//     }
-//     else {
-//         console.log(data)
-//     }
-// })
-
-
-
-// const getText = (path) =>{
-//     return new Promise((resolve,reject) =>{
-//         readFile(path,'utf-8',(err,data) =>{
-//             if(err){
-//                 reject(err)
-//             }
-//             else{
-//                 resolve(data)
-//             }
-//         })
-//     })
-// }
+stream.on('error' , (err) => console.log(err))
